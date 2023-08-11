@@ -4,205 +4,69 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>测试动画与filter之间的兼容</title>
+    <title>软件盘demo</title>
 </head>
 <body>
-    <!-- <div class="filter-transition"></div> -->
-
-    <div class="contain-box">
-        <!-- <div class="image-contain">
-            <img class="image" src="https://wechatapppro-1252524126.file.myqcloud.com/appAKLWLitn7978/image/default/c9SfOmx1686734566WG.png" alt="">
-            <div class="filter-box"></div>
-        </div>
-        <div class="image-contain">
-            <img class="image" src="https://wechatapppro-1252524126.file.myqcloud.com/appAKLWLitn7978/image/default/c9SfOmx1686734566WG.png" alt="">
-            <div class="filter-box"></div>
-        </div>
-        <div class="image-contain">
-            <img class="image" src="https://wechatapppro-1252524126.file.myqcloud.com/appAKLWLitn7978/image/default/c9SfOmx1686734566WG.png" alt="">
-            <div class="filter-box"></div>
-        </div>
-        <div class="image-contain">
-            <img class="image" src="https://wechatapppro-1252524126.file.myqcloud.com/appAKLWLitn7978/image/default/c9SfOmx1686734566WG.png" alt="">
-            <div class="filter-box"></div>
-        </div>
-        <div class="image-contain">
-            <img class="image" src="https://wechatapppro-1252524126.file.myqcloud.com/appAKLWLitn7978/image/default/c9SfOmx1686734566WG.png" alt="">
-            <div class="filter-box"></div>
-        </div>
-        <div class="image-contain">
-            <img class="image" src="https://wechatapppro-1252524126.file.myqcloud.com/appAKLWLitn7978/image/default/c9SfOmx1686734566WG.png" alt="">
-            <div class="filter-box"></div>
-        </div> -->
+    <div class="input-test">
         <textarea
             id="text_input_id"
-            ref="text_input"
-            class="aliveWordInput t2 canTouchMove"
+            class="aliveWordInput"
             type="text"
-            maxlength="512"
-            rows="3">
-        </textarea>
+        ></textarea>
+        <button id="openBtn">打开</button>
     </div>
 </body>
-</html>
 <script>
-    let dom = document.getElementsByClassName("filter-transition")[0], type = true;
-    dom.addEventListener('click', (e) => {
-        type ? dom.classList.add("filter-transition-rotate") : dom.classList.remove("filter-transition-rotate");
-        type = !type;
-    })
+    let inputVal = '';
+    const redirectFun = () => {
+        // 获取输入框得东西
+        const inputVal = document.getElementById("text_input_id").value;
+        console.log("inputVal--------", inputVal, inputVal.indexOf("http") === -1);
+        if (inputVal.indexOf("http") === -1) {
+            alert("请输入http或https格式的链接");
+            return;
+        }
+        // 打开链接对应的页面
+        window.location.href = inputVal;
+    };
 
-
-    // 测试挂载问题
-    // function loadScript(staticResourceUrlFirst, staticResourceUrlSecond) {
-    //     return new Promise(function(resolve, reject) {
-    //         // 第一个主包
-    //         let scriptFirst = document.createElement('script');
-    //         scriptFirst.id = "pageJsFileFirst";
-    //         scriptFirst.async = true;
-    //         scriptFirst.src = staticResourceUrlFirst;
-    //         // 第二个主包
-    //         let scriptSecond = document.createElement('script');
-    //         scriptSecond.id = "pageJsFileSecond";
-    //         scriptSecond.async = true;
-    //         scriptSecond.src = staticResourceUrlSecond;
-
-    //         scriptFirst.onload = () => {
-    //             // 当第一个主包挂载完后，回调开吃操作第二个主包的挂载
-    //             let staticDom = document.getElementsByTagName("script")[1];
-    //             staticDom.parentNode.insertBefore(scriptSecond, staticDom);
-    //             resolve();
-    //         };
-
-    //         scriptFirst.onerror = function() {
-    //             reject(new Error('第一个脚本加载出错'));
-    //         };
-
-    //         scriptSecond.onerror = function() {
-    //             reject(new Error('第二个脚本加载出错'));
-    //         };
-
-    //         // 挂载第一个主包
-    //         let staticDom = document.getElementsByTagName("script")[0];
-    //         staticDom.parentNode.insertBefore(scriptFirst, staticDom);
-    //     });
-    // }
-    // loadScript("https://res.wx.qq.com/open/js/jweixin-1.6.0.js", "https://open.work.weixin.qq.com/wwopen/js/jwxwork-1.0.0.js")
-    // .then((res) => {
-    //     console.log("加载脚本成功");
-    // })
-    // .catch((err) => {
-    //     console.log("加载脚本出错了：", err)
-    // });
-
-    
-    // let firstIsFinish = false;
-    function loadScript(src, type) {
-        return new Promise(function(resolve, reject) {
-            var script = document.createElement('script');
-            script.src = src;
-            // script.async = true; // 异步加载
-
-            script.onload = function() {
-                console.log("jer============那个先加载完成呢？", src);
-                resolve();
-            };
-
-            script.onerror = function() {
-                reject();
-            };
-
-            // document.head.appendChild(script);
-            if(type == "first") {
-                let staticDom = document.getElementsByTagName("script")[0];
-                staticDom.parentNode.insertBefore(script, staticDom);
-            } else {
-                let staticDom = document.getElementsByTagName("script")[1];
-                staticDom.parentNode.insertBefore(script, staticDom);
-            }
-        });
-    }
-
-    Promise.all([
-        loadScript('https://commonlib.cdn.xiaoeknow.com/aegis/1.38.33/aegis.min.js', "second"),
-        loadScript('https://open.work.weixin.qq.com/wwopen/js/jwxwork-1.0.0.js', "first"),
-    ])
-    .then(function() {
-        console.log('所有脚本已加载');
-    })
-    .catch(function() {
-        console.error('加载脚本出错');
+    // 操作打开或回车按钮
+    document.getElementById("openBtn").addEventListener("click", () => {
+        redirectFun();
     });
+    document.onkeydown = (event) => {
+        let e = event || window.event || arguments.callee.caller.arguments[0];
+        if(e && e.keyCode === 13){
+            redirectFun();
+        }
+    }
 </script>
 <style>
-*{
-    margin: 0;
-    padding: 0;
-}
-
-.filter-transition {
-    transition: all 0.3s;
-    width: 50px;
-    height: 50px;
-    background-color: red;
-    margin-bottom: 50px;
-}
-
-.contain-box {
-    width: 100vw;
-    height: 100vh;
-    position: relative;
-    background-color: antiquewhite;
-}
-
-.aliveWordInput {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.filter-transition-rotate {
-    transform: rotate(135deg);
-}
-
-.image-contain {
-    width: 200px;
-    height: 150px;
-    position: relative;
-    display: inline-block;
-    overflow: hidden;
-}
-
-.image {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    z-index: 2;
-    -o-object-fit: contain!important;
-    object-fit: contain!important;
-}
-
-.filter-box {
-    width: 100%;
-    height: 100%;
-
-    background-image: url("https://wechatapppro-1252524126.file.myqcloud.com/appAKLWLitn7978/image/default/c9SfOmx1686734566WG.png");
-    background-position: center center;
-    background-repeat: no-repeat;
-    filter: blur(20px);
-    position: absolute;
-    top: 0;
-    margin: 0 auto;
-    padding: 1em;
-    width: 100%;
-    height: 100%;
-    background: hsla(0,0%,100%,.25) border-box;
-    overflow: hidden;
-    text-shadow: 0 1px 1px hsla(0,0%,100%,.3);
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    .input-test {
+        position: relative;
+        background-color: antiquewhite;
+        width: 100vw;
+        height: 100vh;
+    }
+    .aliveWordInput {
+        box-sizing: border-box;
+        width: calc(100% - 60px);
+        height: 48px;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+    }
+    #openBtn {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 60px;
+        height: 48px;
+        cursor: pointer;
+    }
 </style>
+</html>
